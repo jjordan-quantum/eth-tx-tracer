@@ -13,6 +13,7 @@ import {
   MAINNET_USDC_ADDRESS,
   MAINNET_WETH_ADDRESS, MAX_UINT_256
 } from "../src/lib/constants";
+import BigNumber from "bignumber.js";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -114,10 +115,12 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   //
   // =========================================================================
 
+  const addLiquidityAmount = (new BigNumber(deployerTokenBalance as string)).div(new BigNumber('10')).toFixed(0);
+
   // encode an add liquidity txn on UniswapV2 for 10 ETH + new token
   const addLiquidityTxData = tracer.swapCallEncoder.encodeAddLiquidityEth(
     tokenAddress,
-    deployerTokenBalance as string,
+    addLiquidityAmount,
     '0',
     '0',
     TOKEN_DEPLOYER_ADDRESS,
