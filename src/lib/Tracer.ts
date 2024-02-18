@@ -127,25 +127,26 @@ export class Tracer {
       return {...result};
     }
 
-    const addresses = Object.keys(resultingOverrides);
+    const useOverrides = JSON.parse(JSON.stringify(resultingOverrides));
+    const addresses = Object.keys(useOverrides);
 
     for(const address of addresses) {
       if(!this.cachedState.hasOwnProperty(address)) {
-        this.cachedState[address] = {...resultingOverrides[address]};
+        this.cachedState[address] = {...useOverrides[address]};
         continue;
       }
 
-      const keys =  Object.keys(resultingOverrides[address]);
+      const keys =  Object.keys(useOverrides[address]);
 
       for(const key of keys) {
         if(key === 'stateDiff') {
-          const slots = Object.keys(resultingOverrides[address].stateDiff);
+          const slots = Object.keys(useOverrides[address].stateDiff);
 
           for(const slot of slots) {
-            this.cachedState[address].stateDiff[slot] = resultingOverrides[address].stateDiff[slot];
+            this.cachedState[address].stateDiff[slot] = useOverrides[address].stateDiff[slot];
           }
         } else {
-          this.cachedState[address][key] = resultingOverrides[address][key];
+          this.cachedState[address][key] = useOverrides[address][key];
         }
       }
     }

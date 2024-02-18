@@ -74,6 +74,8 @@ class TraceCallStateDiffFetcher {
           }
         );
 
+      console.log(response);
+
       if(!response) {
        return {
           success: false,

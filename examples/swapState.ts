@@ -33,6 +33,8 @@ const tracer = new Tracer({jsonRpcUrl});
     MAX_UINT_256,  // never expires
   );
 
+  console.log(swapData);
+
   // prepare swap tx
   const swapTx = {
     from: MY_DEV_ADDRESS,
