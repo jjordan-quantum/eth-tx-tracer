@@ -10,6 +10,9 @@ const ONE_THOUSAND_ETH = Web3Utils.toWei('1000', 'ether');
 
 config();
 
+// you only need this if you are not using ssl for your nodes - shhhhhh
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = String(0);
+
 const jsonRpcUrl = process.env.JSON_RPC_URL as string;
 const tracer = new Tracer({jsonRpcUrl});
 
