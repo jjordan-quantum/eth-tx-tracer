@@ -1,3 +1,5 @@
+import {Erc20CallEncoder} from "../services/encoders/Erc20CallEncoder";
+
 const Web3Utils = require('web3-utils');
 import TraceCallLogsFetcher, {LogTracerResult} from "../services/fetchers/TraceCallLogsFetcher";
 import TraceCallStateDiffFetcher, {StateDiffTracerResult} from "../services/fetchers/TraceCallStateDiffFetcher";
@@ -37,6 +39,7 @@ export class Tracer {
   jsonRpcUrl: string;
   logTracer: TraceCallLogsFetcher;
   stateTracer: TraceCallStateDiffFetcher;
+  erc20CallEncoder: Erc20CallEncoder;
   cachedState: any = {};
 
   constructor(options: TracerOptions) {
@@ -47,6 +50,7 @@ export class Tracer {
     this.jsonRpcUrl = jsonRpcUrl;
     this.logTracer = new TraceCallLogsFetcher();
     this.stateTracer = new TraceCallStateDiffFetcher();
+    this.erc20CallEncoder = new Erc20CallEncoder();
   }
 
   clearState() {
