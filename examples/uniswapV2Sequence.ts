@@ -2,7 +2,7 @@ import {Tracer} from "../src";
 import * as util from "util";
 
 import {
-  JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH,
+  JSON_RPC_URL, MY_DEV_ADDRESS, ONE_ETH, ONE_HUNDRED_ETH,
   SIMPLE_TOKEN_BYTECODE, TEN_ETH, TEN_USDC,
   TOKEN_DEPLOYER_ADDRESS, TX_SENDER
 } from "./constants";
@@ -153,47 +153,41 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // =========================================================================
   //
-  // swap from ETH to token, from a different address
+  // swap 1 ETH to token, from a different address
   //
   // =========================================================================
 
-  // // encode a swap on UniswapV2 from 10 ETH -> DAI
-  // const swapData = tracer.swapCallEncoder.encodeSwapExactEthForTokens(
-  //   '1000',  // not worried about slippage - only tracing
-  //   [MAINNET_WETH_ADDRESS, MAINNET_DAI_ADDRESS],
-  //   MY_DEV_ADDRESS,
-  //   MAX_UINT_256,  // never expires
-  // );
-  //
-  // // prepare swap tx
-  // const swapTx = {
-  //   from: MY_DEV_ADDRESS,
-  //   to: MAINNET_UNISWAPV2_ROUTER,
-  //   value: TEN_ETH,
-  //   data: swapData,
-  // }
+  // encode a swap on UniswapV2 from 10 ETH -> DAI
+  const swapData = tracer.swapCallEncoder.encodeSwapExactEthForTokens(
+    '0',  // not worried about slippage - only tracing
+    [MAINNET_WETH_ADDRESS, tokenAddress],
+    MY_DEV_ADDRESS,
+    MAX_UINT_256,  // never expires
+  );
 
-  // =========================================================================
-  //
-  // trace the swap and cache the state changes
-  //
-  // =========================================================================
+  // prepare swap tx
+  const swapTx = {
+    from: MY_DEV_ADDRESS,
+    to: MAINNET_UNISWAPV2_ROUTER,
+    value: ONE_ETH,
+    data: swapData,
+  }
 
-  // // trace swap tx and cache state
-  // const result1 = await tracer.traceCall({...swapTx}, {
-  //   traceType: TraceType.state,
-  //   balanceOverride: ONE_HUNDRED_ETH,
-  //   useCachedState: false,
-  //   cacheStateFromTrace: true,
-  // });
-  //
-  // console.log('\nTrace result for swap from ETH -> DAI:');
-  // console.log('===========================================================\n');
-  //
-  // console.log(util.inspect({
-  //   ...result1,
-  //   result: 'hidden'  // <--- comment this line to see full trace result
-  // }, false, null, true));
+  // trace swap tx and cache state
+  const result3 = await tracer.traceCall({...swapTx}, {
+    traceType: TraceType.state,
+    balanceOverride: TEN_ETH,
+    useCachedState: true,
+    cacheStateFromTrace: true,
+  });
+
+  console.log('\nTrace result for swap from ETH -> token:');
+  console.log('===========================================================\n');
+
+  console.log(util.inspect({
+    ...result3,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
 
   // =========================================================================
   //
@@ -201,13 +195,13 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   //
   // =========================================================================
 
-  // // uses cached state by default
-  // const balanceResult = await tracer.getTokenBalance(
-  //   MAINNET_DAI_ADDRESS,
-  //   MY_DEV_ADDRESS,
-  // );
-  //
-  // console.log(`\nDecoded balance: ${balanceResult.result}`);
+  // uses cached state by default
+  const balanceResult = await tracer.getTokenBalance(
+    tokenAddress,
+    MY_DEV_ADDRESS,
+  );
+
+  console.log(`\nToken balance after swap: ${balanceResult.result}`);
 
   // =========================================================================
   //
