@@ -4,10 +4,11 @@ import {
   MAINNET_DAI_ADDRESS,
   MAINNET_UNISWAPV2_ROUTER,
   MAINNET_WETH_ADDRESS,
-  MAX_UINT_256, ZERO_ADDRESS
+  MAX_UINT_256
 } from "../src/lib/constants";
 import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
 import {TraceType} from "../src/lib/types";
+import {LogTracerResult} from "../src/services/fetchers/TraceCallLogsFetcher";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -36,37 +37,20 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // =========================================================================
   //
-  // trace the swap and cache the state changes
+  // trace the swap and print the logs emitted
   //
   // =========================================================================
 
   // trace swap tx and cache state
   const result0 = await tracer.traceCall({...swapTx}, {
-    traceType: TraceType.state,
+    traceType: TraceType.logs,
     balanceOverride: ONE_HUNDRED_ETH,
     useCachedState: false,
     cacheStateFromTrace: true,
   });
 
-  console.log('\nTrace result for swap from ETH -> DAI:');
+  console.log('\nLogs traced for swap from ETH -> DAI:');
   console.log('===========================================================\n');
 
-  console.log(util.inspect({
-    ...result0,
-    result: 'hidden'  // <--- comment this line to see full trace result
-  }, false, null, true));
-
-  // =========================================================================
-  //
-  // check the balance of DAI with eth_call using state changes
-  //
-  // =========================================================================
-
-  // uses cached state by default
-  const balanceResult = await tracer.getTokenBalance(
-    MAINNET_DAI_ADDRESS,
-    MY_DEV_ADDRESS,
-  );
-
-  console.log(`\nDecoded balance: ${balanceResult.result}`);
+  console.log(util.inspect((<LogTracerResult>result0).logs || [], false, null, true));
 })();

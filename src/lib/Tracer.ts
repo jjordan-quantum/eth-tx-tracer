@@ -263,6 +263,7 @@ export class Tracer {
     }
   }
 
+  // TODO
   async getTokenTotalSupply(token: string, owner: string): Promise<any> {}
   async getTokenName(token: string, owner: string): Promise<any> {}
   async getTokenSymbol(token: string, owner: string): Promise<any> {}
