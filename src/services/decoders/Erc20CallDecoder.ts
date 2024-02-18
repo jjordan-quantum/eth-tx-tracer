@@ -44,7 +44,20 @@ export class Erc20CallDecoder {
   }
 
   decodeAllowance(result: string): any {
-    // TODO
+    const decodedReturnData: any = Web3EthAbi.decodeParameters(
+      ['uint256'],
+      result,
+    );
+
+    if(!decodedReturnData) {
+      return undefined;
+    }
+
+    if(decodedReturnData.length === 0) {
+      return undefined;
+    }
+
+    return decodedReturnData[0];
   }
 
   decodeApproval(result: string): any {

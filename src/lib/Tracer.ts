@@ -208,7 +208,61 @@ export class Tracer {
     }
   }
 
-  async getTokenAllowance(token: string, owner: string): Promise<any> {}
+  async getTokenAllowance(
+    token: string,
+    owner: string,
+    spender: string,
+    useCachedState: boolean = true
+  ): Promise<ContractCallResult<string>> {
+    try {
+      const allowanceData: string = this.erc20CallEncoder.encodeAllowance(
+        token,
+        owner,
+        spender,
+      );
+
+      const allowanceCallTx: any = {
+        from: ZERO_ADDRESS,  // sender address doesn't matter for this particular contract call
+        to: token,
+        data: allowanceData,
+      }
+
+      const result: EthCallFetcherResult = await this.ethCall({...allowanceCallTx}, {
+        useCachedState,
+      });
+
+      if(!result.success) {
+        return {
+          success: false,
+          message: `eth_call failed - message: ${result.message}`,
+          error: result.error,
+        }
+      }
+
+      if(!result.result) {
+        return {
+          success: false,
+          message: `result undefined for eth_call - message: ${result.message}`,
+          error: result.error,
+        }
+      }
+
+      const allowance: string | undefined = this.erc20CallDecoder.decodeAllowance(result.result as string);
+
+      return {
+        success: !!allowance,
+        message: !!allowance ? undefined : `failed to decode eth_call result of: ${result.result}`,
+        result: allowance,
+      }
+    } catch(e) {
+      return {
+        success: false,
+        message: `encountered error getting token balance`,
+        error: e,
+      }
+    }
+  }
+
   async getTokenTotalSupply(token: string, owner: string): Promise<any> {}
   async getTokenName(token: string, owner: string): Promise<any> {}
   async getTokenSymbol(token: string, owner: string): Promise<any> {}

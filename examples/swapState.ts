@@ -53,10 +53,6 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   //console.log(util.inspect(result0, false, null, true));  // <--- uncomment this to see full trace result
   console.log(util.inspect({...result0, result: 'hidden'}, false, null, true));
 
-  console.log('\ncached state:');
-  console.log('===========================================================\n');
-  console.log(util.inspect(tracer.cachedState, false, null, true));
-
   // =========================================================================
   //
   // check the balance of DAI with eth_call using state changes
