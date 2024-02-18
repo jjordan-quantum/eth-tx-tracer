@@ -34,7 +34,6 @@ export class Erc20CallEncoder {
   }
 
   encodeApproval(
-    address: string,
     spender: string,
     amount: any
   ): string {
@@ -42,7 +41,6 @@ export class Erc20CallEncoder {
   }
 
   encodeTransfer(
-    address: string,
     recipient: string,
     amount: any
   ): string {

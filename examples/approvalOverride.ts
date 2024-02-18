@@ -46,7 +46,7 @@ const tracer = new Tracer({jsonRpcUrl});
   });
 
   console.log('\nEthCallFetcher result for transferFrom without overrides:');
-  console.log('=============================================\n');
+  console.log('===========================================================\n');
   console.log(util.inspect(result0, false, null, true));
 
   // =========================================================================
@@ -56,7 +56,6 @@ const tracer = new Tracer({jsonRpcUrl});
   // =========================================================================
 
   const approvalData = tracer.erc20CallEncoder.encodeApproval(
-    MY_DEV_ADDRESS,
     TX_SENDER,
     TEN_USDC,
   );
@@ -75,7 +74,7 @@ const tracer = new Tracer({jsonRpcUrl});
   });
 
   console.log('\nEthCallFetcher result for approval tx:');
-  console.log('=============================================\n');
+  console.log('===========================================================\n');
   console.log(util.inspect(result1, false, null, true));
 
   // =========================================================================
@@ -91,6 +90,6 @@ const tracer = new Tracer({jsonRpcUrl});
   });
 
   console.log('\nEthCallFetcher result for transferFrom with overrides:');
-  console.log('=============================================\n');
+  console.log('===========================================================\n');
   console.log(util.inspect(result2, false, null, true));
 })();

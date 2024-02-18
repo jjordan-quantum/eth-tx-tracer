@@ -4,6 +4,7 @@ const Web3Utils = require('web3-utils');
 import TraceCallLogsFetcher, {LogTracerResult} from "../services/fetchers/TraceCallLogsFetcher";
 import TraceCallStateDiffFetcher, {StateDiffTracerResult} from "../services/fetchers/TraceCallStateDiffFetcher";
 import EthCallFetcher, {EthCallFetcherResult} from "../services/fetchers/EthCallFetcher";
+import {UniswapV2SwapEncoder} from "../services/encoders/UniswapV2SwapEncoder";
 
 export type TracerOptions = {
   jsonRpcUrl: string,
@@ -40,6 +41,7 @@ export class Tracer {
   logTracer: TraceCallLogsFetcher;
   stateTracer: TraceCallStateDiffFetcher;
   erc20CallEncoder: Erc20CallEncoder;
+  swapCallEncoder: UniswapV2SwapEncoder;
   cachedState: any = {};
 
   constructor(options: TracerOptions) {
@@ -51,6 +53,7 @@ export class Tracer {
     this.logTracer = new TraceCallLogsFetcher();
     this.stateTracer = new TraceCallStateDiffFetcher();
     this.erc20CallEncoder = new Erc20CallEncoder();
+    this.swapCallEncoder = new UniswapV2SwapEncoder();
   }
 
   clearState() {

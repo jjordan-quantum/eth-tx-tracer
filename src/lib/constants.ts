@@ -1,5 +1,6 @@
 export const MAINNET_USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const MAINNET_UNISWAPV2_ROUTER = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 
 export const CustomLogTracer = "{\n" +
   "    data: [],\n" +
