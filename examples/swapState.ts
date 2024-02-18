@@ -2,12 +2,12 @@ import {Tracer} from "../src";
 import * as util from "util";
 import {
   MAINNET_DAI_ADDRESS,
-  MAINNET_UNISWAPV2_ROUTER,
+  MAINNET_UNISWAPV2_ROUTER, MAINNET_USDC_ADDRESS,
   MAINNET_WETH_ADDRESS,
-  MAX_UINT_256
+  MAX_UINT_256, ZERO_ADDRESS
 } from "../src/lib/constants";
 import {TraceType} from "../src/lib/Tracer";
-import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
+import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH, TEN_USDC, TX_SENDER} from "./constants";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -50,7 +50,31 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   console.log('\nEthCallFetcher result for swap from ETH -> DAI:');
   console.log('===========================================================\n');
-  console.log(util.inspect(result0, false, null, true));
+  //console.log(util.inspect(result0, false, null, true));  // <--- uncomment this to see full trace result
+  console.log(util.inspect({...result0, result: 'hidden'}, false, null, true));
 
-  // TODO - check balance of DAI after using state
+  // =========================================================================
+  //
+  // check the balance of DAI with eth_call using state changes
+  //
+  // =========================================================================
+
+  const balanceOfData = tracer.erc20CallEncoder.encodeBalanceOf(
+    MAINNET_DAI_ADDRESS,
+    TX_SENDER,
+  );
+
+  const balanceOfCallTx = {
+    from: ZERO_ADDRESS,  // sender address doesn't matter for this particular contract call
+    to: MAINNET_DAI_ADDRESS,
+    data: balanceOfData,
+  }
+
+  const result1 = await tracer.ethCall({...balanceOfCallTx}, {
+    useCachedState: true,
+  });
+
+  console.log('\nEthCallFetcher result for transferFrom without overrides:');
+  console.log('===========================================================\n');
+  console.log(util.inspect(result1, false, null, true));
 })();

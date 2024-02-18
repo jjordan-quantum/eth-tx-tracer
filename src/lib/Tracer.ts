@@ -28,7 +28,7 @@ export type CallOptions = {
   useCachedState: boolean,  // uses cached state, if exists
   //clearCachedState: boolean,  // clears after call
   blockNumber?: number,  // will call against this block - be careful if not using archive
-  usePendingBlock: boolean,  // will call against pending block - blockNumber overrides this
+  usePendingBlock?: boolean,  // will call against pending block - blockNumber overrides this
 }
 
 export enum TraceType {
