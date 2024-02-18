@@ -76,7 +76,12 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   console.log('\nEthCallFetcher result for approval tx:');
   console.log('===========================================================\n');
-  console.log(util.inspect(result1, false, null, true));
+
+  console.log(util.inspect({
+    ...result1,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
+
 
   // =========================================================================
   //

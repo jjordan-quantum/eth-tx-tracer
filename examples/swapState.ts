@@ -50,8 +50,11 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   console.log('\nEthCallFetcher result for swap from ETH -> DAI:');
   console.log('===========================================================\n');
-  //console.log(util.inspect(result0, false, null, true));  // <--- uncomment this to see full trace result
-  console.log(util.inspect({...result0, result: 'hidden'}, false, null, true));
+
+  console.log(util.inspect({
+    ...result0,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
 
   // =========================================================================
   //
