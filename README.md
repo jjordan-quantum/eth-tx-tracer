@@ -57,3 +57,9 @@ npx ts-node examples/swapState.ts
 ```shell
 npx ts-node examples/swapLogs.ts
 ```
+
+3. Long example including token deployment, approve router, add liquidity, buy tokens with ETH from another address, approve router, sell tokens:
+
+```shell
+npx ts-node examples/uniswapV2Sequence.ts
+```
