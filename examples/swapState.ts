@@ -30,7 +30,7 @@ const tracer = new Tracer({jsonRpcUrl});
     '0',  // not worried about slippage - only tracing
     [MAINNET_WETH_ADDRESS, MAINNET_USDC_ADDRESS],
     MY_DEV_ADDRESS,
-    MAX_UINT_256,  // never expires
+    '11111111111111111111',  // never expires
   );
 
   console.log(swapData);

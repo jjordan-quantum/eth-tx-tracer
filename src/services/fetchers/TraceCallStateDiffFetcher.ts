@@ -1,5 +1,6 @@
 import axios from "axios";
 const Web3Utils = require('web3-utils');
+import * as util from "util";
 
 export type StateDiffTracerResult = {
   success: boolean;
@@ -54,6 +55,8 @@ class TraceCallStateDiffFetcher {
         options.blockoverrides = {..._blockoverrides};
       }
 
+      console.log(util.inspect(options, false, null, true));
+
       const response = await axios
         .post(
           jsonRpcUrl,
@@ -74,8 +77,6 @@ class TraceCallStateDiffFetcher {
           }
         );
 
-      console.log(response);
-
       if(!response) {
        return {
           success: false,
@@ -83,6 +84,8 @@ class TraceCallStateDiffFetcher {
           targetAddress,
         }
       }
+
+      console.log(response.data);
 
       if(!response.data) {
        return {
