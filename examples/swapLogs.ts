@@ -8,7 +8,6 @@ import {
 } from "../src/lib/constants";
 import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
 import {TraceType} from "../src/lib/types";
-import {LogTracerResult} from "../src/services/fetchers/TraceCallLogsFetcher";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -50,5 +49,5 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   console.log('\nLogs traced for swap from ETH -> DAI:');
   console.log('===========================================================\n');
 
-  console.log(util.inspect((<LogTracerResult>result0).logs || [], false, null, true));
+  console.log(util.inspect(result0.logs || [], false, null, true));
 })();
