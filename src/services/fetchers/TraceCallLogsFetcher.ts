@@ -1,23 +1,7 @@
 import axios from "axios";
 import {CustomLogTracer} from "../../lib/constants";
+import {TraceCallResult} from "../../lib/types";
 const Web3Utils = require('web3-utils');
-
-export type TracedLog = {
-  address: string,
-  data?: string,
-  topic0?: string,
-  topic1?: string,
-  topic2?: string,
-  topic3?: string,
-}
-
-export type LogTracerResult = {
-  success: boolean,
-  message?: string,
-  error?: any,
-
-  logs?: TracedLog[],
-}
 
 class TraceCallLogsFetcher {
   async apply(
@@ -26,7 +10,7 @@ class TraceCallLogsFetcher {
     blockNumber?: number,
     _overrides?: any,
     _blockoverrides?: any,
-  ): Promise<LogTracerResult> {
+  ): Promise<TraceCallResult> {
     try {
       const traceTx: any = {
         from: tx.from,

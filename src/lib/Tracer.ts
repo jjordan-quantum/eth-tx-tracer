@@ -1,14 +1,14 @@
 import {Erc20CallEncoder} from "../services/encoders/Erc20CallEncoder";
 import Contract from "web3-eth-contract";
 const Web3Utils = require('web3-utils');
-import TraceCallLogsFetcher, {LogTracerResult} from "../services/fetchers/TraceCallLogsFetcher";
-import TraceCallStateDiffFetcher, {StateDiffTracerResult} from "../services/fetchers/TraceCallStateDiffFetcher";
+import TraceCallLogsFetcher from "../services/fetchers/TraceCallLogsFetcher";
+import TraceCallStateDiffFetcher from "../services/fetchers/TraceCallStateDiffFetcher";
 import EthCallFetcher, {EthCallFetcherResult} from "../services/fetchers/EthCallFetcher";
 import {UniswapV2SwapEncoder} from "../services/encoders/UniswapV2SwapEncoder";
 import {UniswapV2ERC20ABI} from "../abis/UnipswapV2ERC20ABI";
 import {MAINNET_DAI_ADDRESS, MAINNET_USDC_ADDRESS, ZERO_ADDRESS} from "./constants";
 import {Erc20CallDecoder} from "../services/decoders/Erc20CallDecoder";
-import {CallOptions, ContractCallResult, TracerOptions, TraceTxOptions, TraceType} from "./types";
+import {CallOptions, ContractCallResult, TraceCallResult, TracerOptions, TraceTxOptions, TraceType} from "./types";
 
 export class Tracer {
   jsonRpcUrl: string;
@@ -45,7 +45,7 @@ export class Tracer {
     this.cachedState[key] = value;
   }
 
-  async traceCall(tx: any, traceTxOptions: TraceTxOptions): Promise<StateDiffTracerResult | LogTracerResult> {
+  async traceCall(tx: any, traceTxOptions: TraceTxOptions): Promise<TraceCallResult> {
     const {
       traceType,
       blockNumber,
@@ -78,7 +78,7 @@ export class Tracer {
       }
     }
 
-    const result: StateDiffTracerResult = await this.stateTracer.apply(
+    const result: TraceCallResult = await this.stateTracer.apply(
       this.jsonRpcUrl,
       {...tx},
       targetAddress,

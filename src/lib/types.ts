@@ -1,3 +1,28 @@
+export type TracedLog = {
+  address: string,
+  data?: string,
+  topic0?: string,
+  topic1?: string,
+  topic2?: string,
+  topic3?: string,
+}
+
+export type TraceCallResult = {
+  success: boolean,
+  message?: string,
+  error?: any,
+  result?: any;
+
+  // tracing state
+  resultingOverrides?: any;
+  targetAddress?: string;
+  newContracts?: string[];
+  foundTargetAddress?: boolean;
+
+  // tracing logs
+  logs?: TracedLog[],
+}
+
 export type TracerOptions = {
   jsonRpcUrl: string,
 }

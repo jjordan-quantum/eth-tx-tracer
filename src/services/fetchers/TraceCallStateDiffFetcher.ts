@@ -1,17 +1,6 @@
 import axios from "axios";
+import {TraceCallResult} from "../../lib/types";
 const Web3Utils = require('web3-utils');
-import * as util from "util";
-
-export type StateDiffTracerResult = {
-  success: boolean;
-  error?: any;
-  message?: string;
-  result?: any;
-  resultingOverrides?: any;
-  targetAddress?: string;
-  newContracts?: string[];
-  foundTargetAddress?: boolean;
-}
 
 class TraceCallStateDiffFetcher {
   async apply(
@@ -21,7 +10,7 @@ class TraceCallStateDiffFetcher {
     blockNumber?: number,
     _overrides?: any,
     _blockoverrides?: any,
-  ): Promise<StateDiffTracerResult> {
+  ): Promise<TraceCallResult> {
     try {
       const traceTx: any = {
         from: tx.from,
