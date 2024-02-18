@@ -2,7 +2,7 @@ import {Tracer} from "../src";
 import * as util from "util";
 
 import {
-  JSON_RPC_URL, MY_DEV_ADDRESS, ONE_ETH, ONE_HUNDRED_ETH,
+  JSON_RPC_URL, ONE_ETH, ONE_HUNDRED_ETH,
   SIMPLE_TOKEN_BYTECODE, TEN_ETH, TEN_USDC,
   TOKEN_DEPLOYER_ADDRESS, TX_SENDER
 } from "./constants";
@@ -161,13 +161,13 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   const swapData = tracer.swapCallEncoder.encodeSwapExactEthForTokens(
     '0',  // not worried about slippage - only tracing
     [MAINNET_WETH_ADDRESS, tokenAddress],
-    MY_DEV_ADDRESS,
+    TOKEN_DEPLOYER_ADDRESS,
     MAX_UINT_256,  // never expires
   );
 
   // prepare swap tx
   const swapTx = {
-    from: MY_DEV_ADDRESS,
+    from: TOKEN_DEPLOYER_ADDRESS,
     to: MAINNET_UNISWAPV2_ROUTER,
     value: ONE_ETH,
     data: swapData,
@@ -198,7 +198,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   // uses cached state by default
   const balanceResult = await tracer.getTokenBalance(
     tokenAddress,
-    MY_DEV_ADDRESS,
+    TOKEN_DEPLOYER_ADDRESS,
   );
 
   const buyerTokenBalance = balanceResult.result;
@@ -216,7 +216,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   );
 
   const approvalTx1 = {
-    from: MY_DEV_ADDRESS,
+    from: TOKEN_DEPLOYER_ADDRESS,
     to: tokenAddress,
     data: approvalData1,
   }
@@ -245,7 +245,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   // uses cached state by default
   const allowanceResult2 = await tracer.getTokenAllowance(
     tokenAddress,
-    MY_DEV_ADDRESS,
+    TOKEN_DEPLOYER_ADDRESS,
     MAINNET_UNISWAPV2_ROUTER,
   );
 
@@ -262,13 +262,13 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
     buyerTokenBalance as string,
     '0',  // not worried about slippage - only tracing
     [tokenAddress, MAINNET_WETH_ADDRESS],
-    MY_DEV_ADDRESS,
+    TOKEN_DEPLOYER_ADDRESS,
     MAX_UINT_256,  // never expires
   );
 
   // prepare swap tx
   const sellSwapTx = {
-    from: MY_DEV_ADDRESS,
+    from: TOKEN_DEPLOYER_ADDRESS,
     to: MAINNET_UNISWAPV2_ROUTER,
     data: sellSwapData,
   }
@@ -298,7 +298,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   // uses cached state by default
   const balanceResult2 = await tracer.getTokenBalance(
     tokenAddress,
-    MY_DEV_ADDRESS,
+    TOKEN_DEPLOYER_ADDRESS,
   );
 
   const tokenBalanceAfterSell = balanceResult2.result;
