@@ -38,4 +38,22 @@ export class UniswapV2SwapEncoder {
       deadline
     ).encodeABI();
   }
+
+  encodeAddLiquidityEth(
+    token: string,
+    amountTokenDesired: string,
+    amountTokenMin: string,
+    amountETHMin: string,
+    recipient: string,
+    deadline: string,
+  ): string {
+    return this.contract.methods.addLiquidityETH(
+      token,
+      amountTokenDesired,
+      amountTokenMin,
+      amountETHMin,
+      recipient,
+      deadline
+    ).encodeABI();
+  }
 }

@@ -2,12 +2,17 @@ import {Tracer} from "../src";
 import * as util from "util";
 
 import {
-  JSON_RPC_URL, MY_DEV_ADDRESS,
+  JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH,
   SIMPLE_TOKEN_BYTECODE, TEN_ETH, TEN_USDC,
   TOKEN_DEPLOYER_ADDRESS, TX_SENDER
 } from "./constants";
 import {TraceType} from "../src/lib/types";
-import {MAINNET_UNISWAPV2_ROUTER, MAINNET_USDC_ADDRESS} from "../src/lib/constants";
+import {
+  MAINNET_DAI_ADDRESS,
+  MAINNET_UNISWAPV2_ROUTER,
+  MAINNET_USDC_ADDRESS,
+  MAINNET_WETH_ADDRESS, MAX_UINT_256
+} from "../src/lib/constants";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -108,6 +113,43 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   // create liquidity pool
   //
   // =========================================================================
+
+  // encode an add liquidity txn on UniswapV2 for 10 ETH + new token
+  const addLiquidityTxData = tracer.swapCallEncoder.encodeAddLiquidityEth(
+    tokenAddress,
+    deployerTokenBalance as string,
+    '0',
+    '0',
+    TOKEN_DEPLOYER_ADDRESS,
+    MAX_UINT_256,  // never expires
+  );
+
+  // prepare swap tx
+  const addLiquidityTx = {
+    from: TOKEN_DEPLOYER_ADDRESS,
+    to: MAINNET_UNISWAPV2_ROUTER,
+    value: TEN_ETH,
+    data: addLiquidityTxData,
+  }
+
+  // trace swap tx and cache state
+  const result2 = await tracer.traceCall({...addLiquidityTx}, {
+    traceType: TraceType.state,
+    balanceOverride: ONE_HUNDRED_ETH,
+    useCachedState: true,
+    cacheStateFromTrace: true,
+  });
+
+  console.log('\nTrace result for adding liquidity:');
+  console.log('===========================================================\n');
+
+  console.log(util.inspect({
+    ...result2,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
+
+  const lpAddress: string = result2.newContracts ? result2.newContracts[0] : '';
+  console.log(`\nNew liquidity pool address: ${lpAddress}`);
 
   // =========================================================================
   //
