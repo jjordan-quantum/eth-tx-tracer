@@ -8,6 +8,7 @@ const Web3Utils = require('web3-utils');
 
 const MY_DEV_ADDRESS: string = '0x6b8fA3E8E2FDABC3d9Cd5985Ee294aa44B82B351';
 const TEN_ETH = Web3Utils.toWei('10', 'ether');
+const ONE_HUNDRED_ETH = Web3Utils.toWei('100', 'ether');
 
 config();
 
@@ -43,7 +44,7 @@ const tracer = new Tracer({jsonRpcUrl});
   // trace swap tx and cache state
   const result0 = await tracer.traceCall({...swapTx}, {
     traceType: TraceType.state,
-    balanceOverride: TEN_ETH,
+    balanceOverride: ONE_HUNDRED_ETH,
     useCachedState: false,
     cacheStateFromTrace: true,
   });
