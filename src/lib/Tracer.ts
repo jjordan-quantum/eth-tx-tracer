@@ -138,7 +138,6 @@ export class Tracer {
     }
   }
 
-
   async ethCall(tx: any, callOptions: CallOptions): Promise<EthCallFetcherResult> {
     const {
       blockNumber,

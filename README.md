@@ -11,3 +11,5 @@ Specifically will be used for tracing pending transactions, with custom tracers 
 I seem to copy and paste code for this between projects I'm working on so frequently, that it makes sense to put all the features in their own library and perhaps even publish a package.
 
 Note: this library will require a Geth node with the JSON-RPC interface exposed and the debug API enabled.
+
+example usage and tests cases coming soon...
