@@ -1,3 +1,4 @@
+const Web3Utils = require('web3-utils');
 import TraceCallLogsFetcher, {LogTracerResult} from "../services/fetchers/TraceCallLogsFetcher";
 import TraceCallStateDiffFetcher, {StateDiffTracerResult} from "../services/fetchers/TraceCallStateDiffFetcher";
 import EthCallFetcher, {EthCallFetcherResult} from "../services/fetchers/EthCallFetcher";
@@ -9,6 +10,7 @@ export type TracerOptions = {
 export type TraceTxOptions = {
   traceType: TraceType,
   blockNumber?: number,  // will trace against this block - be careful if not using archive
+  balanceOverride?: string,  // provider balance override for sender (in WEI)
   blockOverrides?: any,  // will be applied to blockoverrides option
   stateOverrides?: any,  // will be applied to cached state, if exists and using
   cacheStateFromTrace: boolean,  // will cache the state changes from trace, if trace type==state, after clearing cache
@@ -19,6 +21,7 @@ export type TraceTxOptions = {
 
 export type CallOptions = {
   stateOverrides?: any,  // will be applied to cached state, if exists and using
+  balanceOverride?: string,  // provider balance override for sender (in WEI)
   useCachedState: boolean,  // uses cached state, if exists
   //clearCachedState: boolean,  // clears after call
   blockNumber?: number,  // will call against this block - be careful if not using archive
@@ -34,7 +37,7 @@ export class Tracer {
   jsonRpcUrl: string;
   logTracer: TraceCallLogsFetcher;
   stateTracer: TraceCallStateDiffFetcher;
-  cachedState = {};
+  cachedState: any = {};
 
   constructor(options: TracerOptions) {
     const {
@@ -67,6 +70,7 @@ export class Tracer {
       cacheStateFromTrace,
       useCachedState,
       targetAddress,
+      balanceOverride,
     } = traceTxOptions;
 
     if(traceType === TraceType.logs) {
@@ -76,7 +80,8 @@ export class Tracer {
         blockNumber,
         {
           ...(useCachedState ? this.cachedState : {}),
-          ...(stateOverrides || {})
+          ...(stateOverrides || {}),
+          ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.toHex(balanceOverride) }}) : {}),
         },
         blockOverrides,
       );
@@ -96,7 +101,8 @@ export class Tracer {
       blockNumber,
       {
         ...(useCachedState ? this.cachedState : {}),
-        ...(stateOverrides || {})
+        ...(stateOverrides || {}),
+        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.toHex(balanceOverride) }}) : {}),
       },
       blockOverrides,
     );
@@ -136,6 +142,8 @@ export class Tracer {
         }
       }
     }
+
+    return {...result};
   }
 
   async ethCall(tx: any, callOptions: CallOptions): Promise<EthCallFetcherResult> {
@@ -144,6 +152,7 @@ export class Tracer {
       stateOverrides,
       useCachedState,
       usePendingBlock,
+      balanceOverride,
     } = callOptions;
 
     return EthCallFetcher.apply(
@@ -152,7 +161,8 @@ export class Tracer {
       blockNumber,
       {
         ...(useCachedState ? this.cachedState : {}),
-        ...(stateOverrides || {})
+        ...(stateOverrides || {}),
+        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.toHex(balanceOverride) }}) : {}),
       },
       usePendingBlock,
     );
