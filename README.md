@@ -12,4 +12,48 @@ I seem to copy and paste code for this between projects I'm working on so freque
 
 Note: this library will require a Geth node with the JSON-RPC interface exposed and the debug API enabled.
 
-Example usage and tests cases coming soon...
+To use this library clone the repo:
+
+```shell
+git clone https://github.com/jjordan-quantum/eth-tx-tracer.git
+```
+
+Install deps:
+
+```typescript
+npm i
+```
+
+Compile:
+
+```typescript
+npm run build
+```
+
+Create a `.env` file in the repos base directory, with a single var of `JSON_RPC_URL` - this must be for a Geth node with debug api enabled.
+
+Review and run the scripts in the `examples` dir to understand usage:
+
+1. Using a balance override to simulate a transaction:
+
+```shell
+npx ts-node examples/balanceOverride.ts
+```
+
+2. Tracing an approval tx to cache the state changes and use the allowance in subsequent simulations:
+
+```shell
+npx ts-node examples/approvalOverride.ts
+```
+
+3. Tracing a swap tx and using the cached state changes to check token balance:
+
+```shell
+npx ts-node examples/swapState.ts
+```
+
+3. Tracing a swap tx and printing the logs that would have been emitted in the swap:
+
+```shell
+npx ts-node examples/swapLogs.ts
+```
