@@ -45,7 +45,8 @@ const tracer = new Tracer({jsonRpcUrl});
     usePendingBlock: false,
   });
 
-  console.log('EthCallFetcher result for transferFrom without overrides:');
+  console.log('\nEthCallFetcher result for transferFrom without overrides:');
+  console.log('=============================================\n');
   console.log(util.inspect(result0, false, null, true));
 
   // =========================================================================
@@ -73,7 +74,8 @@ const tracer = new Tracer({jsonRpcUrl});
     cacheStateFromTrace: true,
   });
 
-  console.log('EthCallFetcher result for approval tx:');
+  console.log('\nEthCallFetcher result for approval tx:');
+  console.log('=============================================\n');
   console.log(util.inspect(result1, false, null, true));
 
   // =========================================================================
@@ -88,6 +90,7 @@ const tracer = new Tracer({jsonRpcUrl});
     usePendingBlock: false,
   });
 
-  console.log('EthCallFetcher result for transferFrom with overrides:');
+  console.log('\nEthCallFetcher result for transferFrom with overrides:');
+  console.log('=============================================\n');
   console.log(util.inspect(result2, false, null, true));
 })();

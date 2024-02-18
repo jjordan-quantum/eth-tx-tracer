@@ -35,6 +35,7 @@ const tracer = new Tracer({jsonRpcUrl});
   });
 
   console.log('EthCallFetcher result without overrides:');
+  console.log('=============================================\n');
   console.log(util.inspect(result0, false, null, true));
 
   // =========================================================================
@@ -49,6 +50,7 @@ const tracer = new Tracer({jsonRpcUrl});
     usePendingBlock: false,
   });
 
-  console.log('EthCallFetcher result with overrides:');
+  console.log('\nEthCallFetcher result with overrides:');
+  console.log('=============================================\n');
   console.log(util.inspect(result1, false, null, true));
 })();
