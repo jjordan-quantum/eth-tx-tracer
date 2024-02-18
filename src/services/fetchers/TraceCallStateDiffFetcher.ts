@@ -33,7 +33,7 @@ class TraceCallStateDiffFetcher {
       }
 
       if(tx.value) {
-        traceTx.value = Web3Utils.toHex(tx.value);
+        traceTx.value = Web3Utils.numberToHex(tx.value);
       }
 
       const blockNumberString: string = blockNumber ? Web3Utils.toHex(blockNumber) : 'latest';
@@ -54,8 +54,6 @@ class TraceCallStateDiffFetcher {
       if(_blockoverrides) {
         options.blockoverrides = {..._blockoverrides};
       }
-
-      console.log(util.inspect(options, false, null, true));
 
       const response = await axios
         .post(
@@ -84,8 +82,6 @@ class TraceCallStateDiffFetcher {
           targetAddress,
         }
       }
-
-      console.log(response.data);
 
       if(!response.data) {
        return {

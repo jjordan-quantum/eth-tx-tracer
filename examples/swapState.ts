@@ -1,39 +1,30 @@
 import {Tracer} from "../src";
 import * as util from "util";
-import {config} from "dotenv";
-import {MAINNET_UNISWAPV2_ROUTER, MAINNET_USDC_ADDRESS, MAINNET_WETH_ADDRESS, MAX_UINT_256} from "../src/lib/constants";
+import {
+  MAINNET_DAI_ADDRESS,
+  MAINNET_UNISWAPV2_ROUTER,
+  MAINNET_WETH_ADDRESS,
+  MAX_UINT_256
+} from "../src/lib/constants";
 import {TraceType} from "../src/lib/Tracer";
+import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
 
-const Web3Utils = require('web3-utils');
-
-const MY_DEV_ADDRESS: string = '0x6b8fA3E8E2FDABC3d9Cd5985Ee294aa44B82B351';
-const TEN_ETH = Web3Utils.toWei('10', 'ether');
-const ONE_HUNDRED_ETH = Web3Utils.toWei('100', 'ether');
-
-config();
-
-// you only need this if you are not using ssl for your nodes - shhhhhh
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = String(0);
-
-const jsonRpcUrl = process.env.JSON_RPC_URL as string;
-const tracer = new Tracer({jsonRpcUrl});
+const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
 (async () => {
   // =========================================================================
   //
-  // swapping a large amount of ETH to USDC
+  // swapping a large amount of ETH to DAI - prepare
   //
   // =========================================================================
 
-  // encode a swap on UniswapV2 from 10 ETH -> USDC
+  // encode a swap on UniswapV2 from 10 ETH -> DAI
   const swapData = tracer.swapCallEncoder.encodeSwapExactEthForTokens(
-    '0',  // not worried about slippage - only tracing
-    [MAINNET_WETH_ADDRESS, MAINNET_USDC_ADDRESS],
+    '1000',  // not worried about slippage - only tracing
+    [MAINNET_WETH_ADDRESS, MAINNET_DAI_ADDRESS],
     MY_DEV_ADDRESS,
-    '11111111111111111111',  // never expires
+    MAX_UINT_256,  // never expires
   );
-
-  console.log(swapData);
 
   // prepare swap tx
   const swapTx = {
@@ -43,6 +34,12 @@ const tracer = new Tracer({jsonRpcUrl});
     data: swapData,
   }
 
+  // =========================================================================
+  //
+  // trace the swap and cache the state changes
+  //
+  // =========================================================================
+
   // trace swap tx and cache state
   const result0 = await tracer.traceCall({...swapTx}, {
     traceType: TraceType.state,
@@ -51,9 +48,9 @@ const tracer = new Tracer({jsonRpcUrl});
     cacheStateFromTrace: true,
   });
 
-  console.log('\nEthCallFetcher result for swap from ETH -> USDC:');
+  console.log('\nEthCallFetcher result for swap from ETH -> DAI:');
   console.log('===========================================================\n');
   console.log(util.inspect(result0, false, null, true));
 
-  // TODO - check balance of USDC after using state
+  // TODO - check balance of DAI after using state
 })();

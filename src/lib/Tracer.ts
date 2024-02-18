@@ -88,7 +88,7 @@ export class Tracer {
         {
           ...(useCachedState ? this.cachedState : {}),
           ...(stateOverrides || {}),
-          ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.toHex(balanceOverride) }}) : {}),
+          ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }}) : {}),
         },
         blockOverrides,
       );
@@ -109,7 +109,7 @@ export class Tracer {
       {
         ...(useCachedState ? this.cachedState : {}),
         ...(stateOverrides || {}),
-        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.toHex(balanceOverride) }}) : {}),
+        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }}) : {}),
       },
       blockOverrides,
     );
@@ -170,7 +170,7 @@ export class Tracer {
       {
         ...(useCachedState ? this.cachedState : {}),
         ...(stateOverrides || {}),
-        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.toHex(balanceOverride) }}) : {}),
+        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }}) : {}),
       },
       usePendingBlock,
     );

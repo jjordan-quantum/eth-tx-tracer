@@ -3,10 +3,10 @@ import {MAINNET_UNISWAPV2_ROUTER} from "../../lib/constants";
 import {UniswapV2Router02ABI} from "../../abis/UniswapV2Router02ABI";
 
 export class UniswapV2SwapEncoder {
-  contract: Contract<any>;
+  contract: Contract;
 
   constructor() {
-    this.contract = new Contract(UniswapV2Router02ABI, MAINNET_UNISWAPV2_ROUTER);
+    this.contract = new Contract(UniswapV2Router02ABI as any[], MAINNET_UNISWAPV2_ROUTER);
   }
 
   encodeSwapExactEthForTokens(

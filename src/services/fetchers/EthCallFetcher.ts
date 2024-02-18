@@ -27,7 +27,7 @@ class EthCallFetcher {
       }
 
       if(tx.value) {
-        sendTxn.value = Web3Utils.toHex(String(tx.value));
+        sendTxn.value = Web3Utils.numberToHex(String(tx.value));
       }
 
       const blockNumberString: string = blockNumber

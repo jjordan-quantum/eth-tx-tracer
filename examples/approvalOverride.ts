@@ -1,24 +1,10 @@
 import {Tracer} from "../src";
 import * as util from "util";
-import {config} from "dotenv";
 import {MAINNET_USDC_ADDRESS} from "../src/lib/constants";
 import {TraceType} from "../src/lib/Tracer";
+import {JSON_RPC_URL, MY_DEV_ADDRESS, TEN_ETH, TEN_USDC, TX_SENDER} from "./constants";
 
-const Web3Utils = require('web3-utils');
-
-const MY_DEV_ADDRESS: string = '0x6b8fA3E8E2FDABC3d9Cd5985Ee294aa44B82B351';
-const TX_SENDER: string = '0xCAb0EdD72491cbAC069C6fDc4229e044fE894B58';
-const ONE_THOUSAND_ETH = Web3Utils.toWei('1000', 'ether');
-const TEN_ETH = Web3Utils.toWei('10', 'ether');
-const TEN_USDC = '10000000';
-
-config();
-
-// you only need this if you are not using ssl for your nodes - shhhhhh
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = String(0);
-
-const jsonRpcUrl = process.env.JSON_RPC_URL as string;
-const tracer = new Tracer({jsonRpcUrl});
+const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
 (async () => {
   // =========================================================================
