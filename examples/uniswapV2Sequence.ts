@@ -2,11 +2,12 @@ import {Tracer} from "../src";
 import * as util from "util";
 
 import {
-  JSON_RPC_URL,
-  SIMPLE_TOKEN_BYTECODE, TEN_ETH,
-  TOKEN_DEPLOYER_ADDRESS
+  JSON_RPC_URL, MY_DEV_ADDRESS,
+  SIMPLE_TOKEN_BYTECODE, TEN_ETH, TEN_USDC,
+  TOKEN_DEPLOYER_ADDRESS, TX_SENDER
 } from "./constants";
 import {TraceType} from "../src/lib/types";
+import {MAINNET_UNISWAPV2_ROUTER, MAINNET_USDC_ADDRESS} from "../src/lib/constants";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -52,7 +53,55 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
     TOKEN_DEPLOYER_ADDRESS,
   );
 
-  console.log(`\nDeployer token balance: ${deployerBalanceResult.result}`);
+  const deployerTokenBalance = deployerBalanceResult.result;
+  console.log(`\nDeployer token balance: ${deployerTokenBalance}`);
+
+  // =========================================================================
+  //
+  // approve router to spend new token
+  //
+  // =========================================================================
+
+  const approvalData = tracer.erc20CallEncoder.encodeApproval(
+    MAINNET_UNISWAPV2_ROUTER,
+    deployerTokenBalance,
+  );
+
+  const approvalTx = {
+    from: TOKEN_DEPLOYER_ADDRESS,
+    to: tokenAddress,
+    data: approvalData,
+  }
+
+  const result1 = await tracer.traceCall({...approvalTx}, {
+    traceType: TraceType.state,
+    balanceOverride: TEN_ETH,
+    useCachedState: true,
+    cacheStateFromTrace: true,
+  });
+
+  console.log('\nTrace result for approval tx:');
+  console.log('===========================================================\n');
+
+  console.log(util.inspect({
+    ...result1,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
+
+  // =========================================================================
+  //
+  // check allowance using cached state
+  //
+  // =========================================================================
+
+  // uses cached state by default
+  const allowanceResult1 = await tracer.getTokenAllowance(
+    tokenAddress,
+    TOKEN_DEPLOYER_ADDRESS,
+    MAINNET_UNISWAPV2_ROUTER,
+  );
+
+  console.log(`\nUniswapV2 allowance to spend deployer's tokens: ${allowanceResult1.result}`);
 
   // =========================================================================
   //
@@ -62,7 +111,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // =========================================================================
   //
-  // swap from ETH to token
+  // swap from ETH to token, from a different address
   //
   // =========================================================================
 
