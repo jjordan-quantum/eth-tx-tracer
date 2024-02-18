@@ -8,8 +8,8 @@ export type TraceTxOptions = {
   balanceOverride?: string,  // provider balance override for sender (in WEI)
   blockOverrides?: any,  // will be applied to blockoverrides option
   stateOverrides?: any,  // will be applied to cached state, if exists and using
-  cacheStateFromTrace: boolean,  // will cache the state changes from trace, if trace type==state, after clearing cache
-  useCachedState: boolean,  // uses cached state, if exists
+  cacheStateFromTrace?: boolean,  // will cache the state changes from trace, if trace type==state, after clearing cache
+  useCachedState?: boolean,  // uses cached state, if exists
   //clearCachedState: boolean,  // clears after trace, before caching state from trace
   targetAddress?: string,
 }

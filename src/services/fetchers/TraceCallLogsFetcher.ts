@@ -38,7 +38,7 @@ class TraceCallLogsFetcher {
       }
 
       if(tx.value) {
-        traceTx.value = Web3Utils.toHex(tx.value);
+        traceTx.value = Web3Utils.numberToHex(tx.value);
       }
 
       const blockNumberString: string = blockNumber ? Web3Utils.toHex(blockNumber) : 'latest';

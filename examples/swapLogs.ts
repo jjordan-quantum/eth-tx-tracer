@@ -45,8 +45,6 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   const result0 = await tracer.traceCall({...swapTx}, {
     traceType: TraceType.logs,
     balanceOverride: ONE_HUNDRED_ETH,
-    useCachedState: false,
-    cacheStateFromTrace: true,
   });
 
   console.log('\nLogs traced for swap from ETH -> DAI:');
