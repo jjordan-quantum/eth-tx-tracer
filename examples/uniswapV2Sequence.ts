@@ -63,7 +63,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // =========================================================================
   //
-  // approve router to spend new token
+  // approve router to spend new token on behalf of deployer
   //
   // =========================================================================
 
@@ -201,15 +201,55 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
     MY_DEV_ADDRESS,
   );
 
-  console.log(`\nToken balance after swap: ${balanceResult.result}`);
+  const buyerTokenBalance = balanceResult.result;
+  console.log(`\nToken balance after swap: ${buyerTokenBalance}`);
 
   // =========================================================================
   //
-  // trace approval for router to spend token
+  // trace approval for router to sell tokens that were just bought with ETH
   //
   // =========================================================================
 
-  // check allowance
+  const approvalData1 = tracer.erc20CallEncoder.encodeApproval(
+    MAINNET_UNISWAPV2_ROUTER,
+    buyerTokenBalance,
+  );
+
+  const approvalTx1 = {
+    from: MY_DEV_ADDRESS,
+    to: tokenAddress,
+    data: approvalData1,
+  }
+
+  const result4 = await tracer.traceCall({...approvalTx1}, {
+    traceType: TraceType.state,
+    balanceOverride: TEN_ETH,
+    useCachedState: true,
+    cacheStateFromTrace: true,
+  });
+
+  console.log('\nTrace result for approval tx:');
+  console.log('===========================================================\n');
+
+  console.log(util.inspect({
+    ...result4,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
+
+  // =========================================================================
+  //
+  // check allowance using cached state
+  //
+  // =========================================================================
+
+  // uses cached state by default
+  const allowanceResult2 = await tracer.getTokenAllowance(
+    tokenAddress,
+    MY_DEV_ADDRESS,
+    MAINNET_UNISWAPV2_ROUTER,
+  );
+
+  console.log(`\nUniswapV2 allowance to spend buyer's tokens: ${allowanceResult2.result}`);
 
   // =========================================================================
   //
@@ -217,5 +257,50 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   //
   // =========================================================================
 
-  // check balance
+  // encode a swap on UniswapV2 from 10 ETH -> DAI
+  const sellSwapData = tracer.swapCallEncoder.encodeSwapExactTokensForEth(
+    buyerTokenBalance as string,
+    '0',  // not worried about slippage - only tracing
+    [tokenAddress, MAINNET_WETH_ADDRESS],
+    MY_DEV_ADDRESS,
+    MAX_UINT_256,  // never expires
+  );
+
+  // prepare swap tx
+  const sellSwapTx = {
+    from: MY_DEV_ADDRESS,
+    to: MAINNET_UNISWAPV2_ROUTER,
+    data: sellSwapData,
+  }
+
+  // trace swap tx and cache state
+  const result5 = await tracer.traceCall({...sellSwapTx}, {
+    traceType: TraceType.state,
+    balanceOverride: TEN_ETH,
+    useCachedState: true,
+    cacheStateFromTrace: true,
+  });
+
+  console.log('\nTrace result for swap from token -> ETH:');
+  console.log('===========================================================\n');
+
+  console.log(util.inspect({
+    ...result5,
+    result: 'hidden'  // <--- comment this line to see full trace result
+  }, false, null, true));
+
+  // =========================================================================
+  //
+  // check the balance of token with eth_call using state changes
+  //
+  // =========================================================================
+
+  // uses cached state by default
+  const balanceResult2 = await tracer.getTokenBalance(
+    tokenAddress,
+    MY_DEV_ADDRESS,
+  );
+
+  const tokenBalanceAfterSell = balanceResult2.result;
+  console.log(`\nToken balance after sell swap: ${tokenBalanceAfterSell}`);
 })();
