@@ -153,6 +153,21 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // =========================================================================
   //
+  // check deployer balance after addubg liquidity
+  //
+  // =========================================================================
+
+  // uses cached state by default
+  const deployerBalanceResult1 = await tracer.getTokenBalance(
+    tokenAddress,
+    TOKEN_DEPLOYER_ADDRESS,
+  );
+
+  const deployerTokenBalance1 = deployerBalanceResult1.result;
+  console.log(`\nDeployer token balance after adding liquidity: ${deployerTokenBalance1}`);
+
+  // =========================================================================
+  //
   // swap 1 ETH to token, from a different address
   //
   // =========================================================================
