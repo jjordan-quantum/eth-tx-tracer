@@ -1,8 +1,8 @@
 import {Tracer} from "../src";
 import * as util from "util";
 import {MAINNET_USDC_ADDRESS} from "../src/lib/constants";
-import {TraceType} from "../src/lib/Tracer";
 import {JSON_RPC_URL, MY_DEV_ADDRESS, TEN_ETH, TEN_USDC, TX_SENDER} from "./constants";
+import {TraceType} from "../src/lib/types";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 

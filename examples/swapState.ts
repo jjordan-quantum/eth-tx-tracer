@@ -6,8 +6,8 @@ import {
   MAINNET_WETH_ADDRESS,
   MAX_UINT_256, ZERO_ADDRESS
 } from "../src/lib/constants";
-import {TraceType} from "../src/lib/Tracer";
 import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
+import {TraceType} from "../src/lib/types";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
