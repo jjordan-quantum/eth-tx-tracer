@@ -5,9 +5,9 @@ import {
   MAINNET_UNISWAPV2_ROUTER,
   MAINNET_WETH_ADDRESS,
   MAX_UINT_256
-} from "../src/lib/constants";
+} from "../src";
 import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
-import {TraceType} from "../src/lib/types";
+import {TraceType} from "../src";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
