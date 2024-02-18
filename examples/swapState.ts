@@ -2,7 +2,7 @@ import {Tracer} from "../src";
 import * as util from "util";
 import {
   MAINNET_DAI_ADDRESS,
-  MAINNET_UNISWAPV2_ROUTER, MAINNET_USDC_ADDRESS,
+  MAINNET_UNISWAPV2_ROUTER,
   MAINNET_WETH_ADDRESS,
   MAX_UINT_256, ZERO_ADDRESS
 } from "../src/lib/constants";
@@ -53,6 +53,10 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   //console.log(util.inspect(result0, false, null, true));  // <--- uncomment this to see full trace result
   console.log(util.inspect({...result0, result: 'hidden'}, false, null, true));
 
+  console.log('\ncached state:');
+  console.log('===========================================================\n');
+  console.log(util.inspect(tracer.cachedState, false, null, true));
+
   // =========================================================================
   //
   // check the balance of DAI with eth_call using state changes
@@ -74,7 +78,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
     useCachedState: true,
   });
 
-  console.log('\nEthCallFetcher result for transferFrom without overrides:');
+  console.log('\nEthCallFetcher result for balanceOf with overrides:');
   console.log('===========================================================\n');
   console.log(util.inspect(result1, false, null, true));
 })();
