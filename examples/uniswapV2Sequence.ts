@@ -41,7 +41,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   console.log(util.inspect({
     ...result0,
-    //result: 'hidden'  // <--- comment this line to see full trace result
+    result: 'hidden'  // <--- comment this line to see full trace result
   }, false, null, true));
 
   const tokenAddress: string = result0.newContracts ? result0.newContracts[0] : '';
@@ -148,7 +148,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   console.log(util.inspect({
     ...result2,
-    //result: 'hidden'  // <--- comment this line to see full trace result
+    result: 'hidden'  // <--- comment this line to see full trace result
   }, false, null, true));
 
   const lpAddress: string = result2.newContracts ? result2.newContracts[0] : '';

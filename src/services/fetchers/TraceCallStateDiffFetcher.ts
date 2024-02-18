@@ -128,6 +128,28 @@ class TraceCallStateDiffFetcher {
         overrides[key] = value;
       }
 
+      // we have to zero out storage values that exist in pre but not post
+      for(const address of Object.keys(response.data.result.pre)) {
+        if(!address) { continue; }
+        if(address.toLowerCase() === tx.from.toLowerCase()) { continue; }
+
+        if(response.data.result.pre[address].hasOwnProperty('storage')) {
+          for(const key of Object.keys(response.data.result.pre[address].storage)) {
+            if(!overrides.hasOwnProperty(address)) {
+              overrides[address] = {};
+            }
+
+            if(!overrides[address].hasOwnProperty('stateDiff')) {
+              overrides[address].stateDiff = {};
+            }
+
+            if(!overrides[address].stateDiff.hasOwnProperty(key)) {
+              overrides[address].stateDiff[key] = '0x0000000000000000000000000000000000000000000000000000000000000000';
+            }
+          }
+        }
+      }
+
       return {
         success: true,
         result: JSON.parse(JSON.stringify(response.data.result)),
