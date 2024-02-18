@@ -9,6 +9,7 @@ import {UniswapV2ERC20ABI} from "../abis/UnipswapV2ERC20ABI";
 import {MAINNET_DAI_ADDRESS, MAINNET_USDC_ADDRESS, ZERO_ADDRESS} from "./constants";
 import {Erc20CallDecoder} from "../services/decoders/Erc20CallDecoder";
 import {CallOptions, ContractCallResult, TraceCallResult, TracerOptions, TraceTxOptions, TraceType} from "./types";
+import {combineOverrides} from "../utils/combineOverrides";
 
 export class Tracer {
   jsonRpcUrl: string;
@@ -62,11 +63,10 @@ export class Tracer {
         this.jsonRpcUrl,
         {...tx},
         blockNumber,
-        {
-          ...(useCachedState ? this.cachedState : {}),
-          ...(stateOverrides || {}),
-          ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }}) : {}),
-        },
+        combineOverrides(
+          combineOverrides(useCachedState ? this.cachedState : {}, stateOverrides || {}),
+          balanceOverride ? {[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }} : {},
+        ),
         blockOverrides,
       );
     }
@@ -83,11 +83,10 @@ export class Tracer {
       {...tx},
       targetAddress,
       blockNumber,
-      {
-        ...(useCachedState ? this.cachedState : {}),
-        ...(stateOverrides || {}),
-        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }}) : {}),
-      },
+      combineOverrides(
+        combineOverrides(useCachedState ? this.cachedState : {}, stateOverrides || {}),
+        balanceOverride ? {[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }} : {},
+      ),
       blockOverrides,
     );
 
@@ -104,30 +103,7 @@ export class Tracer {
       return {...result};
     }
 
-    const useOverrides = JSON.parse(JSON.stringify(resultingOverrides));
-    const addresses = Object.keys(useOverrides);
-
-    for(const address of addresses) {
-      if(!this.cachedState.hasOwnProperty(address)) {
-        this.cachedState[address] = {...useOverrides[address]};
-        continue;
-      }
-
-      const keys =  Object.keys(useOverrides[address]);
-
-      for(const key of keys) {
-        if(key === 'stateDiff') {
-          const slots = Object.keys(useOverrides[address].stateDiff);
-
-          for(const slot of slots) {
-            this.cachedState[address].stateDiff[slot] = useOverrides[address].stateDiff[slot];
-          }
-        } else {
-          this.cachedState[address][key] = useOverrides[address][key];
-        }
-      }
-    }
-
+    this.cachedState = combineOverrides(this.cachedState, resultingOverrides);
     return {...result};
   }
 
@@ -144,11 +120,10 @@ export class Tracer {
       this.jsonRpcUrl,
       {...tx},
       blockNumber,
-      {
-        ...(useCachedState ? this.cachedState : {}),
-        ...(stateOverrides || {}),
-        ...(balanceOverride ? ({[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }}) : {}),
-      },
+      combineOverrides(
+        combineOverrides(useCachedState ? this.cachedState : {}, stateOverrides || {}),
+        balanceOverride ? {[tx.from]: { balance: Web3Utils.numberToHex(balanceOverride) }} : {},
+      ),
       usePendingBlock,
     );
   }
