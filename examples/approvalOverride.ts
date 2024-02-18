@@ -1,6 +1,6 @@
 import {Tracer} from "../src";
 import * as util from "util";
-import {MAINNET_DAI_ADDRESS, MAINNET_USDC_ADDRESS} from "../src/lib/constants";
+import {MAINNET_USDC_ADDRESS} from "../src/lib/constants";
 import {JSON_RPC_URL, MY_DEV_ADDRESS, TEN_ETH, TEN_USDC, TX_SENDER} from "./constants";
 import {TraceType} from "../src/lib/types";
 
@@ -43,7 +43,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // uses cached state by default
   const allowanceResult = await tracer.getTokenAllowance(
-    MAINNET_DAI_ADDRESS,
+    MAINNET_USDC_ADDRESS,
     MY_DEV_ADDRESS,
     TX_SENDER,
   );
@@ -86,7 +86,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   // uses cached state by default
   const allowanceResult1 = await tracer.getTokenAllowance(
-    MAINNET_DAI_ADDRESS,
+    MAINNET_USDC_ADDRESS,
     MY_DEV_ADDRESS,
     TX_SENDER,
   );
