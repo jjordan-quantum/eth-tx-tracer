@@ -63,31 +63,11 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   //
   // =========================================================================
 
-  const balanceOfData = tracer.erc20CallEncoder.encodeBalanceOf(
+  // uses cached state by default
+  const balanceResult = await tracer.getTokenBalance(
     MAINNET_DAI_ADDRESS,
     MY_DEV_ADDRESS,
   );
 
-  const balanceOfCallTx = {
-    from: ZERO_ADDRESS,  // sender address doesn't matter for this particular contract call
-    to: MAINNET_DAI_ADDRESS,
-    data: balanceOfData,
-  }
-
-  const result1 = await tracer.ethCall({...balanceOfCallTx}, {
-    useCachedState: true,
-  });
-
-  console.log('\nEthCallFetcher result for balanceOf with overrides:');
-  console.log('===========================================================\n');
-  console.log(util.inspect(result1, false, null, true));
-
-  // =========================================================================
-  //
-  // decode the balance of DAI from the eth_call result
-  //
-  // =========================================================================
-
-  const balance = tracer.erc20CallDecoder.decodeBalanceOf(result1.result as string);
-  console.log(`Decoded balance: ${balance}`);
+  console.log(`\nDecoded balance: ${balanceResult.result}`);
 })();

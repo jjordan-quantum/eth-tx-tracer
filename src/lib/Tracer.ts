@@ -6,38 +6,9 @@ import TraceCallStateDiffFetcher, {StateDiffTracerResult} from "../services/fetc
 import EthCallFetcher, {EthCallFetcherResult} from "../services/fetchers/EthCallFetcher";
 import {UniswapV2SwapEncoder} from "../services/encoders/UniswapV2SwapEncoder";
 import {UniswapV2ERC20ABI} from "../abis/UnipswapV2ERC20ABI";
-import {MAINNET_USDC_ADDRESS} from "./constants";
+import {MAINNET_DAI_ADDRESS, MAINNET_USDC_ADDRESS, ZERO_ADDRESS} from "./constants";
 import {Erc20CallDecoder} from "../services/decoders/Erc20CallDecoder";
-
-export type TracerOptions = {
-  jsonRpcUrl: string,
-}
-
-export type TraceTxOptions = {
-  traceType: TraceType,
-  blockNumber?: number,  // will trace against this block - be careful if not using archive
-  balanceOverride?: string,  // provider balance override for sender (in WEI)
-  blockOverrides?: any,  // will be applied to blockoverrides option
-  stateOverrides?: any,  // will be applied to cached state, if exists and using
-  cacheStateFromTrace: boolean,  // will cache the state changes from trace, if trace type==state, after clearing cache
-  useCachedState: boolean,  // uses cached state, if exists
-  //clearCachedState: boolean,  // clears after trace, before caching state from trace
-  targetAddress?: string,
-}
-
-export type CallOptions = {
-  stateOverrides?: any,  // will be applied to cached state, if exists and using
-  balanceOverride?: string,  // provider balance override for sender (in WEI)
-  useCachedState: boolean,  // uses cached state, if exists
-  //clearCachedState: boolean,  // clears after call
-  blockNumber?: number,  // will call against this block - be careful if not using archive
-  usePendingBlock?: boolean,  // will call against pending block - blockNumber overrides this
-}
-
-export enum TraceType {
-  logs='logs',
-  state='state',
-}
+import {CallOptions, ContractCallResult, TracerOptions, TraceTxOptions, TraceType} from "./types";
 
 export class Tracer {
   jsonRpcUrl: string;
@@ -181,4 +152,65 @@ export class Tracer {
       usePendingBlock,
     );
   }
+
+  // ==================================================
+  //
+  // token contract calls using overrides
+  //
+  // ==================================================
+
+  async getTokenBalance(token: string, owner: string, useCachedState: boolean = true): Promise<ContractCallResult<string>> {
+    try {
+      const balanceOfData: string = this.erc20CallEncoder.encodeBalanceOf(
+        token,
+        owner,
+      );
+
+      const balanceOfCallTx: any = {
+        from: ZERO_ADDRESS,  // sender address doesn't matter for this particular contract call
+        to: token,
+        data: balanceOfData,
+      }
+
+      const result: EthCallFetcherResult = await this.ethCall({...balanceOfCallTx}, {
+        useCachedState,
+      });
+
+      if(!result.success) {
+        return {
+          success: false,
+          message: `eth_call failed - message: ${result.message}`,
+          error: result.error,
+        }
+      }
+
+      if(!result.result) {
+        return {
+          success: false,
+          message: `result undefined for eth_call - message: ${result.message}`,
+          error: result.error,
+        }
+      }
+
+      const balance: string | undefined = this.erc20CallDecoder.decodeBalanceOf(result.result as string);
+
+      return {
+        success: !!balance,
+        message: !!balance ? undefined : `failed to decode eth_call result of: ${result.result}`,
+        result: balance,
+      }
+    } catch(e) {
+      return {
+        success: false,
+        message: `encountered error getting token balance`,
+        error: e,
+      }
+    }
+  }
+
+  async getTokenAllowance(token: string, owner: string): Promise<any> {}
+  async getTokenTotalSupply(token: string, owner: string): Promise<any> {}
+  async getTokenName(token: string, owner: string): Promise<any> {}
+  async getTokenSymbol(token: string, owner: string): Promise<any> {}
+  async getTokenDecimals(token: string, owner: string): Promise<any> {}
 }
