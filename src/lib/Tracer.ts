@@ -1,10 +1,13 @@
 import {Erc20CallEncoder} from "../services/encoders/Erc20CallEncoder";
-
+import Contract from "web3-eth-contract";
 const Web3Utils = require('web3-utils');
 import TraceCallLogsFetcher, {LogTracerResult} from "../services/fetchers/TraceCallLogsFetcher";
 import TraceCallStateDiffFetcher, {StateDiffTracerResult} from "../services/fetchers/TraceCallStateDiffFetcher";
 import EthCallFetcher, {EthCallFetcherResult} from "../services/fetchers/EthCallFetcher";
 import {UniswapV2SwapEncoder} from "../services/encoders/UniswapV2SwapEncoder";
+import {UniswapV2ERC20ABI} from "../abis/UnipswapV2ERC20ABI";
+import {MAINNET_USDC_ADDRESS} from "./constants";
+import {Erc20CallDecoder} from "../services/decoders/Erc20CallDecoder";
 
 export type TracerOptions = {
   jsonRpcUrl: string,
@@ -41,6 +44,7 @@ export class Tracer {
   logTracer: TraceCallLogsFetcher;
   stateTracer: TraceCallStateDiffFetcher;
   erc20CallEncoder: Erc20CallEncoder;
+  erc20CallDecoder: Erc20CallDecoder;
   swapCallEncoder: UniswapV2SwapEncoder;
   cachedState: any = {};
 
@@ -49,10 +53,12 @@ export class Tracer {
       jsonRpcUrl,
     } = options;
 
+    const erc20Contract = new Contract(UniswapV2ERC20ABI as any[], MAINNET_USDC_ADDRESS)
     this.jsonRpcUrl = jsonRpcUrl;
     this.logTracer = new TraceCallLogsFetcher();
     this.stateTracer = new TraceCallStateDiffFetcher();
-    this.erc20CallEncoder = new Erc20CallEncoder();
+    this.erc20CallEncoder = new Erc20CallEncoder(erc20Contract);
+    this.erc20CallDecoder = new Erc20CallDecoder(erc20Contract);
     this.swapCallEncoder = new UniswapV2SwapEncoder();
   }
 

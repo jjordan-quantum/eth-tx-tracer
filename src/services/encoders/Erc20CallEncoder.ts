@@ -5,8 +5,8 @@ import {MAINNET_USDC_ADDRESS} from "../../lib/constants";
 export class Erc20CallEncoder {
   contract: Contract;
 
-  constructor() {
-    this.contract = new Contract(UniswapV2ERC20ABI as any[], MAINNET_USDC_ADDRESS);
+  constructor(contract?: Contract) {
+    this.contract = contract || new Contract(UniswapV2ERC20ABI as any[], MAINNET_USDC_ADDRESS);
   }
 
   encodeTotalSupply(address: string): string {

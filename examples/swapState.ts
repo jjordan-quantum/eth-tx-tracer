@@ -7,7 +7,7 @@ import {
   MAX_UINT_256, ZERO_ADDRESS
 } from "../src/lib/constants";
 import {TraceType} from "../src/lib/Tracer";
-import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH, TEN_USDC, TX_SENDER} from "./constants";
+import {JSON_RPC_URL, MY_DEV_ADDRESS, ONE_HUNDRED_ETH, TEN_ETH} from "./constants";
 
 const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
@@ -65,7 +65,7 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
 
   const balanceOfData = tracer.erc20CallEncoder.encodeBalanceOf(
     MAINNET_DAI_ADDRESS,
-    TX_SENDER,
+    MY_DEV_ADDRESS,
   );
 
   const balanceOfCallTx = {
@@ -81,4 +81,13 @@ const tracer = new Tracer({jsonRpcUrl: JSON_RPC_URL});
   console.log('\nEthCallFetcher result for balanceOf with overrides:');
   console.log('===========================================================\n');
   console.log(util.inspect(result1, false, null, true));
+
+  // =========================================================================
+  //
+  // decode the balance of DAI from the eth_call result
+  //
+  // =========================================================================
+
+  const balance = tracer.erc20CallDecoder.decodeBalanceOf(result1.result as string);
+  console.log(`Decoded balance: ${balance}`);
 })();
